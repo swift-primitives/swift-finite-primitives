@@ -12,6 +12,8 @@ extension Finite {
     /// or as the foundation for finite types. Many types are isomorphic to
     /// `Ordinal<N>`: `Bool ≅ Ordinal<2>`, `Axis<N> ≅ Ordinal<N>`, etc.
     ///
+    /// - Note: N must be greater than 0 for most operations.
+    ///
     /// ## Example
     ///
     /// ```swift
@@ -45,19 +47,35 @@ extension Finite {
     }
 }
 
+// MARK: - Type Alias
+
+extension Finite {
+    /// Type alias for `Ordinal` using the traditional type-theoretic name `Fin n`.
+    ///
+    /// Use `Finite.Ordinal<N>` in most code; `Finite.Fin<N>` is provided for
+    /// users familiar with the type-theoretic convention.
+    public typealias Fin<let N: Int> = Ordinal<N>
+}
+
 // MARK: - Special Values
 
 extension Finite.Ordinal {
     /// Zero value (first element, index 0).
+    ///
+    /// - Precondition: N > 0
     @inlinable
     public static var zero: Self {
-        Self(unchecked: 0)
+        precondition(N > 0, "Ordinal<0> has no inhabitants")
+        return Self(unchecked: 0)
     }
 
     /// Maximum value (N - 1).
+    ///
+    /// - Precondition: N > 0
     @inlinable
     public static var max: Self {
-        Self(unchecked: N - 1)
+        precondition(N > 0, "Ordinal<0> has no inhabitants")
+        return Self(unchecked: N - 1)
     }
 
     /// Number of inhabitants of this type.
@@ -100,35 +118,15 @@ extension Finite.Ordinal: Codable {
 }
 #endif
 
-// MARK: - Conversion (Static Implementation)
-
-extension Finite.Ordinal {
-    /// Injects an ordinal into a larger domain (safe upcast).
-    ///
-    /// - Precondition: `rawValue` must be less than M
-    @inlinable
-    public static func injected<let M: Int>(_ ordinal: Finite.Ordinal<N>) -> Finite.Ordinal<M> {
-        Finite.Ordinal<M>(unchecked: ordinal.rawValue)
-    }
-
-    /// Attempts to project an ordinal into a smaller domain.
-    ///
-    /// - Returns: The converted ordinal, or `nil` if value is too large.
-    @inlinable
-    public static func projected<let M: Int>(_ ordinal: Finite.Ordinal<N>) -> Finite.Ordinal<M>? {
-        Finite.Ordinal<M>(ordinal.rawValue)
-    }
-}
-
-// MARK: - Conversion (Instance Convenience)
+// MARK: - Conversion
 
 extension Finite.Ordinal {
     /// Converts to an `Ordinal` of a larger domain (safe upcast).
     ///
-    /// - Precondition: `rawValue` must be less than M
+    /// - Precondition: N ≤ M
     @inlinable
     public func injected<let M: Int>() -> Finite.Ordinal<M> {
-        Self.injected(self)
+        Finite.Ordinal<M>(unchecked: rawValue)
     }
 
     /// Attempts to convert to an `Ordinal` of a smaller domain.
@@ -136,11 +134,11 @@ extension Finite.Ordinal {
     /// - Returns: The converted ordinal, or `nil` if value is too large.
     @inlinable
     public func projected<let M: Int>() -> Finite.Ordinal<M>? {
-        Self.projected(self)
+        Finite.Ordinal<M>(rawValue)
     }
 }
 
-// MARK: - Ordinal: Enumerable
+// MARK: - Finite.Enumerable
 
 extension Finite.Ordinal: Finite.Enumerable {
     /// Number of values in `Ordinal<N>`.
@@ -152,6 +150,8 @@ extension Finite.Ordinal: Finite.Enumerable {
     public var caseIndex: Int { rawValue }
 
     /// Creates a value from its index.
+    ///
+    /// - Precondition: `caseIndex` must be in 0..<N
     @inlinable
     public init(caseIndex: Int) {
         self.init(unchecked: caseIndex)
@@ -167,8 +167,3 @@ extension Array {
         self[index.rawValue]
     }
 }
-
-// MARK: - Type Alias
-
-/// Type alias for `Finite.Ordinal` using the traditional type-theoretic name `Fin n`.
-public typealias Fin = Finite.Ordinal

@@ -5,39 +5,6 @@ import Testing
 
 @testable import Finite_Primitives
 
-// MARK: - Ordinal - Static Functions
-
-@Suite
-struct `Ordinal - Static Functions` {
-    @Test
-    func `injected safely converts to larger domain`() {
-        let ord2: Finite.Ordinal<2> = Finite.Ordinal(0)!
-        let ord5: Finite.Ordinal<5> = Finite.Ordinal.injected(ord2)
-        #expect(ord5.rawValue == 0)
-    }
-
-    @Test(arguments: [0, 1])
-    func `injected preserves raw value`(value: Int) {
-        let ord2: Finite.Ordinal<2> = Finite.Ordinal(value)!
-        let ord10: Finite.Ordinal<10> = Finite.Ordinal.injected(ord2)
-        #expect(ord10.rawValue == value)
-    }
-
-    @Test
-    func `projected converts to smaller domain when valid`() {
-        let ord10: Finite.Ordinal<10> = Finite.Ordinal(2)!
-        let ord5: Finite.Ordinal<5>? = Finite.Ordinal.projected(ord10)
-        #expect(ord5?.rawValue == 2)
-    }
-
-    @Test
-    func `projected returns nil when value too large`() {
-        let ord10: Finite.Ordinal<10> = Finite.Ordinal(7)!
-        let ord5: Finite.Ordinal<5>? = Finite.Ordinal.projected(ord10)
-        #expect(ord5 == nil)
-    }
-}
-
 // MARK: - Ordinal - Properties
 
 @Suite
@@ -66,22 +33,6 @@ struct `Ordinal - Properties` {
         #expect(Finite.Ordinal<10>.count == 10)
         #expect(Finite.Ordinal<1>.count == 1)
     }
-
-    @Test
-    func `injected property delegates to static function`() {
-        let ord2: Finite.Ordinal<2> = Finite.Ordinal(1)!
-        let result1: Finite.Ordinal<5> = ord2.injected()
-        let result2: Finite.Ordinal<5> = Finite.Ordinal.injected(ord2)
-        #expect(result1.rawValue == result2.rawValue)
-    }
-
-    @Test
-    func `projected property delegates to static function`() {
-        let ord10: Finite.Ordinal<10> = Finite.Ordinal(2)!
-        let result1: Finite.Ordinal<5>? = ord10.projected()
-        let result2: Finite.Ordinal<5>? = Finite.Ordinal.projected(ord10)
-        #expect(result1?.rawValue == result2?.rawValue)
-    }
 }
 
 // MARK: - Ordinal - Initializers
@@ -105,6 +56,39 @@ struct `Ordinal - Initializers` {
     func `init unchecked creates ordinal without validation`(value: Int) {
         let ordinal: Finite.Ordinal<5> = Finite.Ordinal(unchecked: value)
         #expect(ordinal.rawValue == value)
+    }
+}
+
+// MARK: - Ordinal - Conversion
+
+@Suite
+struct `Ordinal - Conversion` {
+    @Test
+    func `injected safely converts to larger domain`() {
+        let ord2: Finite.Ordinal<2> = Finite.Ordinal(0)!
+        let ord5: Finite.Ordinal<5> = ord2.injected()
+        #expect(ord5.rawValue == 0)
+    }
+
+    @Test(arguments: [0, 1])
+    func `injected preserves raw value`(value: Int) {
+        let ord2: Finite.Ordinal<2> = Finite.Ordinal(value)!
+        let ord10: Finite.Ordinal<10> = ord2.injected()
+        #expect(ord10.rawValue == value)
+    }
+
+    @Test
+    func `projected converts to smaller domain when valid`() {
+        let ord10: Finite.Ordinal<10> = Finite.Ordinal(2)!
+        let ord5: Finite.Ordinal<5>? = ord10.projected()
+        #expect(ord5?.rawValue == 2)
+    }
+
+    @Test
+    func `projected returns nil when value too large`() {
+        let ord10: Finite.Ordinal<10> = Finite.Ordinal(7)!
+        let ord5: Finite.Ordinal<5>? = ord10.projected()
+        #expect(ord5 == nil)
     }
 }
 
@@ -190,7 +174,7 @@ struct `Ordinal - Type Alias` {
     @Test
     func `Fin is alias for Ordinal`() {
         let ord: Finite.Ordinal<5> = Finite.Ordinal(2)!
-        let fin: Fin<5> = Fin(2)!
+        let fin: Finite.Fin<5> = Finite.Fin(2)!
         #expect(ord.rawValue == fin.rawValue)
     }
 }
