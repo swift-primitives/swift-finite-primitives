@@ -27,17 +27,17 @@ struct `Enumerable - Protocol` {
     }
 
     @Test(arguments: [0, 1, 2, 3, 4])
-    func `init from caseIndex creates correct value`(index: Int) {
-        let ordinal = Finite.Ordinal<5>(caseIndex: index)
+    func `init __unchecked creates correct value`(index: Int) {
+        let ordinal = Finite.Ordinal<5>(__unchecked: (), index)
         #expect(ordinal.rawValue == index)
         #expect(ordinal.caseIndex == index)
     }
 
     @Test(arguments: [0, 1, 2, 3, 4])
     func `caseIndex roundtrip`(index: Int) {
-        let ordinal = Finite.Ordinal<5>(caseIndex: index)
+        let ordinal = Finite.Ordinal<5>(__unchecked: (), index)
         let caseIdx = ordinal.caseIndex
-        let reconstructed = Finite.Ordinal<5>(caseIndex: caseIdx)
+        let reconstructed = Finite.Ordinal<5>(__unchecked: (), caseIdx)
         #expect(reconstructed == ordinal)
     }
 
@@ -48,15 +48,15 @@ struct `Enumerable - Protocol` {
     }
 
     @Test(arguments: [0, 1, 2])
-    func `validatingCaseIndex returns value for valid index`(index: Int) {
-        let ordinal = Finite.Ordinal<3>(validatingCaseIndex: index)
+    func `failable init returns value for valid index`(index: Int) {
+        let ordinal = Finite.Ordinal<3>(index)
         #expect(ordinal != nil)
         #expect(ordinal?.rawValue == index)
     }
 
     @Test(arguments: [-1, 3, 10, 100])
-    func `validatingCaseIndex returns nil for invalid index`(index: Int) {
-        let invalid = Finite.Ordinal<3>(validatingCaseIndex: index)
+    func `failable init returns nil for invalid index`(index: Int) {
+        let invalid = Finite.Ordinal<3>(index)
         #expect(invalid == nil)
     }
 }

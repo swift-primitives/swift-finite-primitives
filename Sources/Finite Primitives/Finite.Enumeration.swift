@@ -39,9 +39,25 @@ extension Finite {
             public mutating func next() -> Element? {
                 guard index < Element.caseCount else { return nil }
                 defer { index += 1 }
-                return Element(caseIndex: index)
+                return Element(__unchecked: (), index)
             }
         }
+    }
+}
+
+// MARK: - Total Element Access
+
+extension Finite.Enumeration {
+    /// Returns the element at the given position, or `nil` if out of bounds.
+    ///
+    /// This is the total, safe accessor. For trusted indices where bounds
+    /// are already guaranteed (e.g., from iteration), use `subscript` instead.
+    ///
+    /// - Parameter position: The index to access.
+    /// - Returns: The element at that position, or `nil` if out of bounds.
+    @inlinable
+    public func element(at position: Int) -> Element? {
+        Element(position)
     }
 }
 
@@ -57,13 +73,14 @@ extension Finite.Enumeration: Collection {
     public var endIndex: Int { Element.caseCount }
 
     /// Returns the element at the given position.
+    ///
+    /// This follows `Collection` semantics: the subscript is unchecked.
+    /// For safe access with untrusted input, use `element(at:)` instead.
+    ///
+    /// - Parameter position: Must be in `0..<Element.caseCount`.
     @inlinable
     public subscript(position: Int) -> Element {
-        precondition(
-            position >= 0 && position < Element.caseCount,
-            "Index \(position) out of bounds for \(Element.self)"
-        )
-        return Element(caseIndex: position)
+        Element(__unchecked: (), position)
     }
 
     /// Returns the position immediately after the given index.

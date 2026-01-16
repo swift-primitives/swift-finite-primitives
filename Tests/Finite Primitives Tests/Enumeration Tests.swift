@@ -154,6 +154,34 @@ struct `Enumeration - Iterator` {
     }
 }
 
+// MARK: - Enumeration - Total Element Access
+
+@Suite
+struct `Enumeration - Total Element Access` {
+    @Test(arguments: [0, 1, 2, 3, 4])
+    func `element at returns value for valid index`(index: Int) {
+        let enumeration = Finite.Ordinal<5>.allCases
+        let element = enumeration.element(at: index)
+        #expect(element != nil)
+        #expect(element?.rawValue == index)
+    }
+
+    @Test(arguments: [-1, 5, 10, 100])
+    func `element at returns nil for invalid index`(index: Int) {
+        let enumeration = Finite.Ordinal<5>.allCases
+        let element = enumeration.element(at: index)
+        #expect(element == nil)
+    }
+
+    @Test
+    func `element at is equivalent to subscript for valid indices`() {
+        let enumeration = Finite.Ordinal<5>.allCases
+        for i in 0..<5 {
+            #expect(enumeration.element(at: i) == enumeration[i])
+        }
+    }
+}
+
 // MARK: - Enumeration - Zero-Cost Abstraction
 
 @Suite

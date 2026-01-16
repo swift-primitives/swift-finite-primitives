@@ -9,8 +9,13 @@ extension Finite {
     /// `CaseIterable` with a zero-allocation `RandomAccessCollection`.
     ///
     /// Any `Enumerable` type with N cases is isomorphic to `Ordinal<N>`:
-    /// `init(caseIndex:)` maps from `Ordinal<N>` to `Self`, while `caseIndex`
-    /// provides the inverse.
+    /// `init(__unchecked:_:)` maps from `Ordinal<N>` to `Self`, while
+    /// `caseIndex` provides the inverse.
+    ///
+    /// ## Checked vs Unchecked Access
+    ///
+    /// - `init(__unchecked:_:)`: Fast, unchecked. Only valid for `0..<caseCount`.
+    /// - `init?(validating:)`: Total, safe. Returns `nil` for invalid indices.
     ///
     /// ## Example
     ///
@@ -18,9 +23,9 @@ extension Finite {
     /// struct CardSuit: Finite.Enumerable {
     ///     static let caseCount = 4
     ///     let caseIndex: Int
-    ///     init(caseIndex: Int) { self.caseIndex = caseIndex }
+    ///     init(__unchecked: Void, _ index: Int) { self.caseIndex = index }
     ///
-    ///     static let hearts = CardSuit(caseIndex: 0)
+    ///     static let hearts = CardSuit(__unchecked: (), 0)
     ///     // ... define other suits
     /// }
     ///
@@ -33,10 +38,14 @@ extension Finite {
         /// Index of this value (0 to caseCount-1).
         var caseIndex: Int { get }
 
-        /// Creates a value from its index.
+        /// Creates a value from its index without bounds checking.
         ///
-        /// - Precondition: `caseIndex` must be in 0..<caseCount
-        init(caseIndex: Int)
+        /// This is the unchecked fast path. For safe access with untrusted input,
+        /// use `init?(validating:)` instead.
+        ///
+        /// - Parameter __unchecked: Marker parameter indicating unchecked access.
+        /// - Parameter index: Must be in `0..<caseCount`.
+        init(__unchecked: Void, _ index: Int)
     }
 }
 
@@ -50,15 +59,19 @@ extension Finite.Enumerable {
     }
 }
 
-// MARK: - Safe Initializer
+// MARK: - Total Initializer
 
 extension Finite.Enumerable {
     /// Creates a value from its index, if within bounds.
     ///
+    /// This is the total, safe initializer. For trusted indices where bounds
+    /// are already guaranteed, use `init(__unchecked:_:)` for performance.
+    ///
+    /// - Parameter index: The case index.
     /// - Returns: The value at that index, or `nil` if out of bounds.
     @inlinable
-    public init?(validatingCaseIndex index: Int) {
+    public init?(_ index: Int) {
         guard index >= 0 && index < Self.caseCount else { return nil }
-        self.init(caseIndex: index)
+        self.init(__unchecked: (), index)
     }
 }
