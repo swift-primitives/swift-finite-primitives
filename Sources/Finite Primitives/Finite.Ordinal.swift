@@ -57,31 +57,44 @@ extension Finite {
     public typealias Fin<let N: Int> = Ordinal<N>
 }
 
-// MARK: - Special Values
+// MARK: - Count
 
 extension Finite.Ordinal {
-    /// Zero value (first element, index 0).
-    ///
-    /// - Precondition: N > 0
-    @inlinable
-    public static var zero: Self {
-        precondition(N > 0, "Ordinal<0> has no inhabitants")
-        return Self(unchecked: 0)
-    }
-
-    /// Maximum value (N - 1).
-    ///
-    /// - Precondition: N > 0
-    @inlinable
-    public static var max: Self {
-        precondition(N > 0, "Ordinal<0> has no inhabitants")
-        return Self(unchecked: N - 1)
-    }
-
     /// Number of inhabitants of this type.
     @inlinable
     public static var count: Int { N }
 }
+
+// MARK: - Inhabitant Conveniences (Awaiting Language Support)
+//
+// The following extension requires value-generic constraints (`where N > 0`),
+// which Swift does not yet support. These APIs are only total for N > 0:
+//
+// - `zero` returns the first inhabitant (index 0)
+// - `max` returns the last inhabitant (index N - 1)
+//
+// For `Ordinal<0>`, the type has no inhabitants, so these would be unsound.
+// Rather than:
+// - Use `precondition` (runtime policy, violates primitives philosophy)
+// - Return `Optional` (changes semantics, caller burden for known-safe cases)
+// - Document as "undefined behavior" (implicit contract, error-prone)
+//
+// We choose to not provide the API until Swift can express the constraint.
+// This keeps the API surface honest and anticipates the correct solution.
+//
+// When Swift adds value-generic constraints, uncomment this extension:
+//
+// extension Finite.Ordinal where N > 0 {
+//     /// The first inhabitant (index 0).
+//     @inlinable
+//     public static var zero: Self { Self(unchecked: 0) }
+//
+//     /// The last inhabitant (index N - 1).
+//     @inlinable
+//     public static var max: Self { Self(unchecked: N - 1) }
+// }
+//
+// Until then, use the failable initializer: `Ordinal(0)` or `Ordinal(N - 1)`.
 
 // MARK: - Comparable
 

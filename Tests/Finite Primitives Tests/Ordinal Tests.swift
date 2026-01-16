@@ -16,22 +16,11 @@ struct `Ordinal - Properties` {
     }
 
     @Test
-    func `zero property`() {
-        let zero: Finite.Ordinal<10> = .zero
-        #expect(zero.rawValue == 0)
-    }
-
-    @Test
-    func `max property`() {
-        let max: Finite.Ordinal<5> = .max
-        #expect(max.rawValue == 4)
-    }
-
-    @Test
     func `count property`() {
         #expect(Finite.Ordinal<3>.count == 3)
         #expect(Finite.Ordinal<10>.count == 10)
         #expect(Finite.Ordinal<1>.count == 1)
+        #expect(Finite.Ordinal<0>.count == 0)
     }
 }
 
