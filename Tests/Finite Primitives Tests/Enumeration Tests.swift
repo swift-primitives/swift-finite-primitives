@@ -16,15 +16,15 @@ struct `Enumeration - Collection` {
     }
 
     @Test
-    func `endIndex equals caseCount`() {
+    func `endIndex equals count`() {
         let enumeration = Finite.Ordinal<7>.allCases
         #expect(enumeration.endIndex == 7)
     }
 
     @Test
-    func `count equals caseCount`() {
+    func `count equals count`() {
         let enumeration = Finite.Ordinal<7>.allCases
-        #expect(enumeration.count == Finite.Ordinal<7>.caseCount)
+        #expect(enumeration.count == Finite.Ordinal<7>.count)
     }
 
     @Test(arguments: [0, 1, 2, 3])
@@ -140,7 +140,7 @@ struct `Enumeration - Iterator` {
         while iterator.next() != nil {
             count += 1
         }
-        #expect(count == Finite.Ordinal<5>.caseCount)
+        #expect(count == Finite.Ordinal<5>.count)
         #expect(iterator.next() == nil)
     }
 

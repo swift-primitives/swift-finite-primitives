@@ -223,15 +223,15 @@ struct `Ordinal - Protocol Conformances` {
     }
 
     @Test
-    func `Enumerable caseCount`() {
-        #expect(Finite.Ordinal<5>.caseCount == 5)
-        #expect(Finite.Ordinal<10>.caseCount == 10)
+    func `Enumerable count`() {
+        #expect(Finite.Ordinal<5>.count == 5)
+        #expect(Finite.Ordinal<10>.count == 10)
     }
 
     @Test(arguments: [0, 1, 2, 3])
-    func `Enumerable caseIndex`(index: Int) {
+    func `Enumerable ordinal`(index: Int) {
         let ordinal: Finite.Ordinal<5> = Finite.Ordinal(index)!
-        #expect(ordinal.caseIndex == index)
+        #expect(ordinal.ordinal == index)
     }
 
     @Test(arguments: [0, 1, 2, 3])

@@ -4,28 +4,28 @@
 extension Finite {
     /// A finite type with indexed, enumerable values.
     ///
-    /// `Enumerable` types have exactly `caseCount` distinct values, each with
-    /// a unique index in 0..<caseCount. Conforming types automatically gain
+    /// `Enumerable` types have exactly `count` distinct values, each with
+    /// a unique ordinal in 0..<count. Conforming types automatically gain
     /// `CaseIterable` with a zero-allocation `RandomAccessCollection`.
     ///
-    /// Any `Enumerable` type with N cases is isomorphic to `Ordinal<N>`:
-    /// `init(__unchecked:_:)` maps from `Ordinal<N>` to `Self`, while
-    /// `caseIndex` provides the inverse.
+    /// Any `Enumerable` type with N values is isomorphic to `Ordinal<N>`:
+    /// `init(__unchecked:ordinal:)` maps from `Ordinal<N>` to `Self`, while
+    /// `ordinal` provides the inverse.
     ///
     /// ## Checked vs Unchecked Access
     ///
-    /// - `init(__unchecked:_:)`: Fast, unchecked. Only valid for `0..<caseCount`.
-    /// - `init?(validating:)`: Total, safe. Returns `nil` for invalid indices.
+    /// - `init(__unchecked:ordinal:)`: Fast, unchecked. Only valid for `0..<count`.
+    /// - `init?(_:)`: Total, safe. Returns `nil` for invalid ordinals.
     ///
     /// ## Example
     ///
     /// ```swift
     /// struct CardSuit: Finite.Enumerable {
-    ///     static let caseCount = 4
-    ///     let caseIndex: Int
-    ///     init(__unchecked: Void, _ index: Int) { self.caseIndex = index }
+    ///     static let count = 4
+    ///     let ordinal: Int
+    ///     init(__unchecked: Void, ordinal: Int) { self.ordinal = ordinal }
     ///
-    ///     static let hearts = CardSuit(__unchecked: (), 0)
+    ///     static let hearts = CardSuit(__unchecked: (), ordinal: 0)
     ///     // ... define other suits
     /// }
     ///
@@ -33,19 +33,19 @@ extension Finite {
     /// ```
     public protocol Enumerable: CaseIterable, Sendable {
         /// Number of distinct values of this type.
-        static var caseCount: Int { get }
+        static var count: Int { get }
 
-        /// Index of this value (0 to caseCount-1).
-        var caseIndex: Int { get }
+        /// Ordinal position of this value (0 to count-1).
+        var ordinal: Int { get }
 
-        /// Creates a value from its index without bounds checking.
+        /// Creates a value from its ordinal without bounds checking.
         ///
         /// This is the unchecked fast path. For safe access with untrusted input,
-        /// use `init?(validating:)` instead.
+        /// use `init?(_:)` instead.
         ///
         /// - Parameter __unchecked: Marker parameter indicating unchecked access.
-        /// - Parameter index: Must be in `0..<caseCount`.
-        init(__unchecked: Void, _ index: Int)
+        /// - Parameter ordinal: Must be in `0..<count`.
+        init(__unchecked: Void, ordinal: Int)
     }
 }
 
@@ -62,16 +62,16 @@ extension Finite.Enumerable {
 // MARK: - Total Initializer
 
 extension Finite.Enumerable {
-    /// Creates a value from its index, if within bounds.
+    /// Creates a value from its ordinal, if within bounds.
     ///
-    /// This is the total, safe initializer. For trusted indices where bounds
-    /// are already guaranteed, use `init(__unchecked:_:)` for performance.
+    /// This is the total, safe initializer. For trusted ordinals where bounds
+    /// are already guaranteed, use `init(__unchecked:ordinal:)` for performance.
     ///
-    /// - Parameter index: The case index.
-    /// - Returns: The value at that index, or `nil` if out of bounds.
+    /// - Parameter ordinal: The ordinal position.
+    /// - Returns: The value at that ordinal, or `nil` if out of bounds.
     @inlinable
-    public init?(_ index: Int) {
-        guard index >= 0 && index < Self.caseCount else { return nil }
-        self.init(__unchecked: (), index)
+    public init?(_ ordinal: Int) {
+        guard ordinal >= 0 && ordinal < Self.count else { return nil }
+        self.init(__unchecked: (), ordinal: ordinal)
     }
 }

@@ -429,15 +429,17 @@ extension Finite.Ordinal {
 // MARK: - Finite.Enumerable
 
 extension Finite.Ordinal: Finite.Enumerable {
-    /// Number of values in `Ordinal<N>`.
-    @inlinable
-    public static var caseCount: Int { N }
+    // `static var count: Int` requirement satisfied by existing `count` property above.
 
-    /// Index of this value.
+    /// Ordinal position of this value.
     @inlinable
-    public var caseIndex: Int { rawValue }
+    public var ordinal: Int { rawValue }
 
-    // `init(__unchecked:_:)` requirement satisfied by struct's init.
+    /// Creates an ordinal from its position without bounds checking.
+    @inlinable
+    public init(__unchecked: Void, ordinal: Int) {
+        self.init(__unchecked: (), ordinal)
+    }
 }
 
 // MARK: - Array Subscripting

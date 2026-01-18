@@ -37,9 +37,9 @@ extension Finite {
             /// Returns the next value, or `nil` if exhausted.
             @inlinable
             public mutating func next() -> Element? {
-                guard index < Element.caseCount else { return nil }
+                guard index < Element.count else { return nil }
                 defer { index += 1 }
-                return Element(__unchecked: (), index)
+                return Element(__unchecked: (), ordinal: index)
             }
         }
     }
@@ -70,17 +70,17 @@ extension Finite.Enumeration: Collection {
 
     /// Position past the last element.
     @inlinable
-    public var endIndex: Int { Element.caseCount }
+    public var endIndex: Int { Element.count }
 
     /// Returns the element at the given position.
     ///
     /// This follows `Collection` semantics: the subscript is unchecked.
     /// For safe access with untrusted input, use `element(at:)` instead.
     ///
-    /// - Parameter position: Must be in `0..<Element.caseCount`.
+    /// - Parameter position: Must be in `0..<Element.count`.
     @inlinable
     public subscript(position: Int) -> Element {
-        Element(__unchecked: (), position)
+        Element(__unchecked: (), ordinal: position)
     }
 
     /// Returns the position immediately after the given index.
@@ -105,7 +105,7 @@ extension Finite.Enumeration: BidirectionalCollection {
 extension Finite.Enumeration: RandomAccessCollection {
     /// Number of elements.
     @inlinable
-    public var count: Int { Element.caseCount }
+    public var count: Int { Element.count }
 
     /// Returns the distance between two indices.
     @inlinable
