@@ -18,11 +18,18 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(path: "../swift-ordinal-primitives"),
+        .package(path: "../swift-collection-primitives"),
+        .package(path: "../swift-index-primitives"),
     ],
     targets: [
         .target(
             name: "Finite Primitives",
-            dependencies: []
+            dependencies: [
+                .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
+                .product(name: "Collection Primitives", package: "swift-collection-primitives"),
+                .product(name: "Index Primitives", package: "swift-index-primitives"),
+            ]
         )
     ],
     swiftLanguageModes: [.v6]
