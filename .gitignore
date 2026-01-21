@@ -24,6 +24,7 @@ Thumbs.db
 /*
 !/Sources/
 !/Tests/
+!/Experiments/
 !/.github/
 !/Package.swift
 !/LICENSE.md
@@ -52,3 +53,4 @@ Thumbs.db
 
 # ========== LOCAL OVERRIDES ==========
 # Package-specific rules below (preserved during sync)
+

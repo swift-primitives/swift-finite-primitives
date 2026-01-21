@@ -1,6 +1,8 @@
 // Finite.Ordinal.swift
 // The canonical finite type with exactly N inhabitants.
 
+import Ordinal_Primitives
+
 extension Finite {
     /// A value in the finite set {0, 1, ..., N-1}.
     ///
@@ -442,6 +444,25 @@ extension Finite.Ordinal: Finite.Enumerable {
     }
 }
 
+// MARK: - Affine.Discrete.Bounded Conversion
+
+extension Finite.Ordinal {
+    /// The underlying bounded position in affine discrete space.
+    ///
+    /// This property provides zero-cost conversion to `Affine.Discrete.Bounded<N>`,
+    /// the canonical bounded position type.
+    @inlinable
+    public var bounded: Affine.Discrete.Bounded<N> {
+        Affine.Discrete.Bounded<N>(__unchecked: rawValue)
+    }
+
+    /// Creates a finite ordinal from a bounded position.
+    @inlinable
+    public init(_ bounded: Affine.Discrete.Bounded<N>) {
+        self.init(__unchecked: (), bounded.rawValue)
+    }
+}
+
 // MARK: - Array Subscripting
 
 extension Array {
@@ -449,5 +470,25 @@ extension Array {
     @inlinable
     public subscript<let N: Int>(index: Finite.Ordinal<N>) -> Element {
         self[index.rawValue]
+    }
+}
+
+// MARK: - Ordinal Conversion
+
+extension Ordinal {
+    /// Creates an unbounded ordinal from a finite ordinal.
+    ///
+    /// This conversion is always safe since `Finite.Ordinal<N>` values
+    /// are always non-negative (in the range 0..<N).
+    ///
+    /// ## Example
+    ///
+    /// ```swift
+    /// let finite: Finite.Ordinal<5> = Finite.Ordinal(3)!
+    /// let unbounded = Ordinal(finite)  // Ordinal(3)
+    /// ```
+    @inlinable
+    public init<let N: Int>(_ finiteOrdinal: Finite.Ordinal<N>) {
+        self.init(__unchecked: finiteOrdinal.rawValue)
     }
 }
