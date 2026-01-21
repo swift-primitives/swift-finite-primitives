@@ -1,2 +1,6 @@
 // exports.swift
-// No external dependencies to re-export - finite-primitives is foundational.
+// Re-export dependencies for consumers.
+
+@_exported import Ordinal_Primitives
+@_exported import Collection_Primitives
+@_exported import Index_Primitives
