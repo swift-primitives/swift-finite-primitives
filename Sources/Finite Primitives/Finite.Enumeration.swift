@@ -15,7 +15,7 @@ extension Finite {
     /// for value in MyEnumerableType.allCases { ... }
     /// let third = MyEnumerableType.allCases[2]  // O(1) random access
     /// ```
-    public struct Enumeration<Element: Finite.Enumerable>: Sequence, Sendable {
+    public struct Enumeration<Element: Finite.Enumerable>: Swift.Sequence, Sendable {
         /// Creates a sequence over all values of the element type.
         @inlinable
         public init() {}
@@ -63,7 +63,7 @@ extension Finite.Enumeration {
 
 // MARK: - Enumeration: Collection
 
-extension Finite.Enumeration: Collection {
+extension Finite.Enumeration: Swift.Collection {
     /// Position of the first element (always 0).
     @inlinable
     public var startIndex: Int { 0 }
