@@ -25,6 +25,7 @@ Thumbs.db
 !/Sources/
 !/Tests/
 !/Experiments/
+!/Research/
 !/.github/
 !/Package.swift
 !/LICENSE.md
@@ -39,6 +40,7 @@ Thumbs.db
 !CODE_OF_CONDUCT.md
 !SECURITY.md
 !**/*.docc/**/*.md
+!**/Research/**/*.md
 
 *.pdf
 
