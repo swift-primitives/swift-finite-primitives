@@ -444,22 +444,22 @@ extension Finite.Ordinal: Finite.Enumerable {
     }
 }
 
-// MARK: - Affine.Discrete.Bounded Conversion
+// MARK: - Cyclic.Group Conversion
 
 extension Finite.Ordinal {
-    /// The underlying bounded position in affine discrete space.
+    /// The underlying cyclic group element.
     ///
-    /// This property provides zero-cost conversion to `Affine.Discrete.Bounded<N>`,
-    /// the canonical bounded position type.
+    /// This property provides zero-cost conversion to `Cyclic.Group<N>`,
+    /// the canonical bounded position type with cyclic group semantics.
     @inlinable
-    public var bounded: Affine.Discrete.Bounded<N> {
-        Affine.Discrete.Bounded<N>(__unchecked: rawValue)
+    public var cyclic: Cyclic.Group<N> {
+        Cyclic.Group<N>(__unchecked: rawValue)
     }
 
-    /// Creates a finite ordinal from a bounded position.
+    /// Creates a finite ordinal from a cyclic group element.
     @inlinable
-    public init(_ bounded: Affine.Discrete.Bounded<N>) {
-        self.init(__unchecked: (), bounded.rawValue)
+    public init(_ cyclic: Cyclic.Group<N>) {
+        self.init(__unchecked: (), cyclic.rawValue)
     }
 }
 
