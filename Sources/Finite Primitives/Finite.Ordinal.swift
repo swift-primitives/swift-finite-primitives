@@ -444,21 +444,21 @@ extension Finite.Ordinal: Finite.Enumerable {
     }
 }
 
-// MARK: - Cyclic.Group Conversion
+// MARK: - Cyclic.Group.Element Conversion
 
 extension Finite.Ordinal {
     /// The underlying cyclic group element.
     ///
-    /// This property provides zero-cost conversion to `Cyclic.Group<N>`,
+    /// This property provides zero-cost conversion to `Cyclic.Group<N>.Element`,
     /// the canonical bounded position type with cyclic group semantics.
     @inlinable
-    public var cyclic: Cyclic.Group<N> {
-        Cyclic.Group<N>(__unchecked: rawValue)
+    public var cyclic: Cyclic.Group<N>.Element {
+        Cyclic.Group<N>.Element(__unchecked: (), rawValue)
     }
 
     /// Creates a finite ordinal from a cyclic group element.
     @inlinable
-    public init(_ cyclic: Cyclic.Group<N>) {
+    public init(_ cyclic: Cyclic.Group<N>.Element) {
         self.init(__unchecked: (), cyclic.rawValue)
     }
 }
@@ -473,10 +473,10 @@ extension Array {
     }
 }
 
-// MARK: - Ordinal Conversion
+// MARK: - Ordinal.Position Conversion
 
-extension Ordinal {
-    /// Creates an unbounded ordinal from a finite ordinal.
+extension Ordinal.Position {
+    /// Creates an unbounded ordinal position from a finite ordinal.
     ///
     /// This conversion is always safe since `Finite.Ordinal<N>` values
     /// are always non-negative (in the range 0..<N).
@@ -485,10 +485,10 @@ extension Ordinal {
     ///
     /// ```swift
     /// let finite: Finite.Ordinal<5> = Finite.Ordinal(3)!
-    /// let unbounded = Ordinal(finite)  // Ordinal(3)
+    /// let unbounded = Ordinal.Position(finite)  // Ordinal.Position(3)
     /// ```
     @inlinable
     public init<let N: Int>(_ finiteOrdinal: Finite.Ordinal<N>) {
-        self.init(__unchecked: finiteOrdinal.rawValue)
+        self.init(UInt(finiteOrdinal.rawValue))
     }
 }
