@@ -473,9 +473,9 @@ extension Array {
     }
 }
 
-// MARK: - Ordinal.Position Conversion
+// MARK: - Ordinal Conversion
 
-extension Ordinal.Position {
+extension Ordinal {
     /// Creates an unbounded ordinal position from a finite ordinal.
     ///
     /// This conversion is always safe since `Finite.Ordinal<N>` values
@@ -485,7 +485,7 @@ extension Ordinal.Position {
     ///
     /// ```swift
     /// let finite: Finite.Ordinal<5> = Finite.Ordinal(3)!
-    /// let unbounded = Ordinal.Position(finite)  // Ordinal.Position(3)
+    /// let unbounded = Ordinal(finite)  // Ordinal(3)
     /// ```
     @inlinable
     public init<let N: Int>(_ finiteOrdinal: Finite.Ordinal<N>) {
