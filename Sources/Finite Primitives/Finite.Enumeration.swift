@@ -1,6 +1,8 @@
 // Finite.Enumeration.swift
 // Zero-allocation sequence over Enumerable types.
 
+import Ordinal_Primitives
+
 extension Finite {
     /// A zero-allocation, lazy sequence over an `Enumerable` type.
     ///
@@ -29,7 +31,7 @@ extension Finite {
         /// Iterator that lazily produces each value in index order.
         public struct Iterator: IteratorProtocol, Sendable {
             @usableFromInline
-            var index: Int = 0
+            var index: Ordinal_Primitives.Ordinal = .zero
 
             @inlinable
             init() {}
@@ -37,8 +39,8 @@ extension Finite {
             /// Returns the next value, or `nil` if exhausted.
             @inlinable
             public mutating func next() -> Element? {
-                guard index < Element.count else { return nil }
-                defer { index += 1 }
+                guard index < Element.count else { return nil }  // Ordinal < Cardinal (disfavored overload)
+                defer { index = index + Cardinal.one }           // Ordinal + Cardinal → Ordinal
                 return Element(__unchecked: (), ordinal: index)
             }
         }
@@ -57,7 +59,8 @@ extension Finite.Enumeration {
     /// - Returns: The element at that position, or `nil` if out of bounds.
     @inlinable
     public func element(at position: Int) -> Element? {
-        Element(position)
+        guard let ordinal = Ordinal_Primitives.Ordinal(exactly: position) else { return nil }
+        return Element(ordinal)
     }
 }
 
@@ -70,7 +73,7 @@ extension Finite.Enumeration: Swift.Collection {
 
     /// Position past the last element.
     @inlinable
-    public var endIndex: Int { Element.count }
+    public var endIndex: Int { Int(clamping: Element.count) }
 
     /// Returns the element at the given position.
     ///
@@ -80,7 +83,8 @@ extension Finite.Enumeration: Swift.Collection {
     /// - Parameter position: Must be in `0..<Element.count`.
     @inlinable
     public subscript(position: Int) -> Element {
-        Element(__unchecked: (), ordinal: position)
+        // position is known valid (0..<endIndex), so UInt conversion is safe
+        Element(__unchecked: (), ordinal: Ordinal_Primitives.Ordinal(UInt(position)))
     }
 
     /// Returns the position immediately after the given index.
@@ -105,7 +109,7 @@ extension Finite.Enumeration: BidirectionalCollection {
 extension Finite.Enumeration: RandomAccessCollection {
     /// Number of elements.
     @inlinable
-    public var count: Int { Element.count }
+    public var count: Int { Int(clamping: Element.count) }
 
     /// Returns the distance between two indices.
     @inlinable

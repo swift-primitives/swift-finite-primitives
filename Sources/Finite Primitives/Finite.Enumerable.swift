@@ -1,6 +1,8 @@
 // Finite.Enumerable.swift
 // Protocol for types with finitely many indexed inhabitants.
 
+import Ordinal_Primitives
+
 extension Finite {
     /// A finite type with indexed, enumerable values.
     ///
@@ -33,10 +35,10 @@ extension Finite {
     /// ```
     public protocol Enumerable: CaseIterable, Sendable {
         /// Number of distinct values of this type.
-        static var count: Int { get }
+        static var count: Cardinal { get }
 
         /// Ordinal position of this value (0 to count-1).
-        var ordinal: Int { get }
+        var ordinal: Ordinal_Primitives.Ordinal { get }
 
         /// Creates a value from its ordinal without bounds checking.
         ///
@@ -45,7 +47,7 @@ extension Finite {
         ///
         /// - Parameter __unchecked: Marker parameter indicating unchecked access.
         /// - Parameter ordinal: Must be in `0..<count`.
-        init(__unchecked: Void, ordinal: Int)
+        init(__unchecked: Void, ordinal: Ordinal_Primitives.Ordinal)
     }
 }
 
@@ -70,8 +72,8 @@ extension Finite.Enumerable {
     /// - Parameter ordinal: The ordinal position.
     /// - Returns: The value at that ordinal, or `nil` if out of bounds.
     @inlinable
-    public init?(_ ordinal: Int) {
-        guard ordinal >= 0 && ordinal < Self.count else { return nil }
+    public init?(_ ordinal: Ordinal) {
+        guard ordinal < Self.count else { return nil }  // Ordinal is always >= 0
         self.init(__unchecked: (), ordinal: ordinal)
     }
 }

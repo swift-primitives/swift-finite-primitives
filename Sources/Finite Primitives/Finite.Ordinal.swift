@@ -65,7 +65,7 @@ extension Finite {
 extension Finite.Ordinal {
     /// Number of inhabitants of this type.
     @inlinable
-    public static var count: Int { N }
+    public static var count: Cardinal { Cardinal(UInt(N)) }
 }
 
 // MARK: - Inhabitant Conveniences (Awaiting Language Support)
@@ -431,16 +431,16 @@ extension Finite.Ordinal {
 // MARK: - Finite.Enumerable
 
 extension Finite.Ordinal: Finite.Enumerable {
-    // `static var count: Int` requirement satisfied by existing `count` property above.
-
     /// Ordinal position of this value.
     @inlinable
-    public var ordinal: Int { rawValue }
+    public var ordinal: Ordinal_Primitives.Ordinal {
+        Ordinal_Primitives.Ordinal(self)  // Uses existing extension init (line 491)
+    }
 
     /// Creates an ordinal from its position without bounds checking.
     @inlinable
-    public init(__unchecked: Void, ordinal: Int) {
-        self.init(__unchecked: (), ordinal)
+    public init(__unchecked: Void, ordinal: Ordinal_Primitives.Ordinal) {
+        self.init(__unchecked: (), Int(bitPattern: ordinal))
     }
 }
 
@@ -453,13 +453,13 @@ extension Finite.Ordinal {
     /// the canonical bounded position type with cyclic group semantics.
     @inlinable
     public var cyclic: Cyclic.Group<N>.Element {
-        Cyclic.Group<N>.Element(__unchecked: (), rawValue)
+        Cyclic.Group<N>.Element(__unchecked: Ordinal_Primitives.Ordinal(self))
     }
 
     /// Creates a finite ordinal from a cyclic group element.
     @inlinable
     public init(_ cyclic: Cyclic.Group<N>.Element) {
-        self.init(__unchecked: (), cyclic.rawValue)
+        self.init(__unchecked: (), Int(bitPattern: cyclic.position))
     }
 }
 
