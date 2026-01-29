@@ -70,16 +70,16 @@
 //     }
 // }
 //
-// // MARK: - Ordinal: Bounded
+// // MARK: - Ordinal.Finite: Bounded
 //
-// extension Finite.Ordinal: Finite.Bounded where N > 0 {
+// extension Ordinal.Finite: Finite.Bounded where N > 0 {
 //     /// The minimum ordinal value (index 0).
 //     @inlinable
-//     public static var minBound: Self { Self(unchecked: 0) }
+//     public static var minBound: Self { .zero }
 //
 //     /// The maximum ordinal value (index N - 1).
 //     @inlinable
-//     public static var maxBound: Self { Self(unchecked: N - 1) }
+//     public static var maxBound: Self { Self.max()! }
 // }
 //
 // // MARK: - Default Implementation for Enumerable
@@ -95,6 +95,6 @@
 // }
 //
 // Until Swift supports value-generic constraints, use explicit initialization:
-// - `Ordinal(0)` for minimum (returns nil for Ordinal<0>)
-// - `Ordinal(N - 1)` for maximum (returns nil for Ordinal<0>)
-// - For Enumerable types: `T(caseIndex: 0)` and `T(caseIndex: T.caseCount - 1)`
+// - `Ordinal.Finite<N>.zero` for minimum
+// - `Ordinal.Finite<N>.max()` for maximum (returns nil for N == 0)
+// - For Enumerable types: `T(__unchecked: (), ordinal: .zero)` and similar

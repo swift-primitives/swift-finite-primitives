@@ -8,21 +8,57 @@
 ///
 /// ## Core Types
 ///
+/// - ``Bound``: Phantom tag indicating boundedness to N values
 /// - ``Enumerable``: Protocol for types with finitely many indexed inhabitants
 /// - ``Enumeration``: Zero-allocation collection over enumerable types
-/// - ``Ordinal``: The canonical finite type with exactly N inhabitants (Fin n)
 ///
-/// ## Example
+/// ## Bounded Ordinals
+///
+/// Use `Ordinal.Finite<N>` for bounded ordinal positions:
 ///
 /// ```swift
-/// // Define a finite type
+/// var idx: Ordinal.Finite<4> = .zero
+/// idx = idx.successor()!  // 1
+/// idx = idx.successor()!  // 2
+/// idx = idx.successor()!  // 3
+/// idx.successor()         // nil (at bound)
+/// ```
+///
+/// ## Enumerable Types
+///
+/// ```swift
 /// struct CardSuit: Finite.Enumerable {
-///     static let caseCount = 4
-///     let caseIndex: Int
-///     init(caseIndex: Int) { self.caseIndex = caseIndex }
+///     static let count: Cardinal = 4
+///     let ordinal: Ordinal
+///     init(__unchecked: Void, ordinal: Ordinal) { self.ordinal = ordinal }
 /// }
 ///
-/// // Use the canonical finite type
-/// let index: Finite.Ordinal<4> = Finite.Ordinal(2)!
+/// for suit in CardSuit.allCases { ... }
 /// ```
 public enum Finite: Sendable {}
+
+// MARK: - Finite.Bound
+
+extension Finite {
+    /// Phantom tag indicating a value is bounded to the range [0, N).
+    ///
+    /// `Bound<N>` is used as a tag in `Tagged<Finite.Bound<N>, RawValue>` to indicate
+    /// that the wrapped value is constrained to N possible values.
+    ///
+    /// ## Usage
+    ///
+    /// Typically used via the `Ordinal.Finite<N>` typealias:
+    ///
+    /// ```swift
+    /// // Ordinal.Finite<4> = Tagged<Finite.Bound<4>, Ordinal>
+    /// let idx: Ordinal.Finite<4> = .zero
+    /// idx.successor()  // Returns nil at boundary
+    /// ```
+    ///
+    /// The bound N is accessible via `Ordinal.Finite<N>.capacity()`.
+    public struct Bound<let N: Int>: Hashable, Sendable {
+        /// Creates a bound marker.
+        @inlinable
+        public init() {}
+    }
+}
