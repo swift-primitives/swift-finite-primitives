@@ -1,7 +1,6 @@
 // exports.swift
-// Re-export dependencies for consumers.
+// Re-export essential dependencies for consumers.
 
 @_exported import Ordinal_Primitives
 @_exported import Identity_Primitives
-@_exported import Collection_Primitives
-@_exported import Index_Primitives
+@_exported public import Index_Primitives

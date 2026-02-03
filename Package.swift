@@ -15,12 +15,15 @@ let package = Package(
         .library(
             name: "Finite Primitives",
             targets: ["Finite Primitives"]
+        ),
+        .library(
+            name: "Finite Primitives Test Support",
+            targets: ["Finite Primitives Test Support"]
         )
     ],
     dependencies: [
         .package(path: "../swift-ordinal-primitives"),
         .package(path: "../swift-identity-primitives"),
-        .package(path: "../swift-collection-primitives"),
         .package(path: "../swift-index-primitives"),
     ],
     targets: [
@@ -29,10 +32,24 @@ let package = Package(
             dependencies: [
                 .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
                 .product(name: "Identity Primitives", package: "swift-identity-primitives"),
-                .product(name: "Collection Primitives", package: "swift-collection-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
             ]
-        )
+        ),
+        .target(
+            name: "Finite Primitives Test Support",
+            dependencies: [
+                "Finite Primitives",
+                .product(name: "Index Primitives Test Support", package: "swift-index-primitives"),
+            ],
+            path: "Tests/Support"
+        ),
+        .testTarget(
+            name: "Finite Primitives Tests",
+            dependencies: [
+                "Finite Primitives",
+                "Finite Primitives Test Support",
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

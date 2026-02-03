@@ -2,6 +2,7 @@
 // Zero-allocation sequence over Enumerable types.
 
 import Ordinal_Primitives
+import Index_Primitives
 
 extension Finite {
     /// A zero-allocation, lazy sequence over an `Enumerable` type.
@@ -67,30 +68,32 @@ extension Finite.Enumeration {
 // MARK: - Enumeration: Collection
 
 extension Finite.Enumeration: Swift.Collection {
-    /// Position of the first element (always 0).
+    /// Phantom-typed index for type-safe collection access.
+    public typealias Index = Index_Primitives.Index<Element>
+
+    /// Position of the first element.
     @inlinable
-    public var startIndex: Int { 0 }
+    public var startIndex: Index { .zero }
 
     /// Position past the last element.
     @inlinable
-    public var endIndex: Int { Int(clamping: Element.count) }
+    public var endIndex: Index { Index(Index.Count(Element.count)) }
 
     /// Returns the element at the given position.
     ///
     /// This follows `Collection` semantics: the subscript is unchecked.
     /// For safe access with untrusted input, use `element(at:)` instead.
     ///
-    /// - Parameter position: Must be in `0..<Element.count`.
+    /// - Parameter position: Must be in `startIndex..<endIndex`.
     @inlinable
-    public subscript(position: Int) -> Element {
-        // position is known valid (0..<endIndex), so UInt conversion is safe
-        Element(__unchecked: (), ordinal: Ordinal_Primitives.Ordinal(UInt(position)))
+    public subscript(position: Index) -> Element {
+        Element(__unchecked: (), ordinal: position.position)
     }
 
     /// Returns the position immediately after the given index.
     @inlinable
-    public func index(after i: Int) -> Int {
-        i + 1
+    public func index(after i: Index) -> Index {
+        i + Index.Count(Cardinal.one)
     }
 }
 
@@ -99,8 +102,10 @@ extension Finite.Enumeration: Swift.Collection {
 extension Finite.Enumeration: BidirectionalCollection {
     /// Returns the position immediately before the given index.
     @inlinable
-    public func index(before i: Int) -> Int {
-        i - 1
+    public func index(before i: Index) -> Index {
+        // BidirectionalCollection guarantees i > startIndex.
+        // Ordinal subtraction by cardinal is safe here.
+        Index(Ordinal(i.position.rawValue &- 1))
     }
 }
 
@@ -113,24 +118,24 @@ extension Finite.Enumeration: RandomAccessCollection {
 
     /// Returns the distance between two indices.
     @inlinable
-    public func distance(from start: Int, to end: Int) -> Int {
-        end - start
+    public func distance(from start: Index, to end: Index) -> Int {
+        Int(bitPattern: end.position) - Int(bitPattern: start.position)
     }
 
     /// Returns an index offset by the given distance.
     @inlinable
-    public func index(_ i: Int, offsetBy distance: Int) -> Int {
-        i + distance
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+        Index(Ordinal(UInt(bitPattern: Int(bitPattern: i.position) + distance)))
     }
 
     /// Returns an index offset by the given distance, limited by a boundary.
     @inlinable
-    public func index(_ i: Int, offsetBy distance: Int, limitedBy limit: Int) -> Int? {
-        let result = i + distance
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+        let result = Int(bitPattern: i.position) + distance
         if distance >= 0 {
-            return result <= limit ? result : nil
+            return result <= Int(bitPattern: limit.position) ? Index(Ordinal(UInt(bitPattern: result))) : nil
         } else {
-            return result >= limit ? result : nil
+            return result >= Int(bitPattern: limit.position) ? Index(Ordinal(UInt(bitPattern: result))) : nil
         }
     }
 }

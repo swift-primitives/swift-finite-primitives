@@ -23,11 +23,11 @@ extension Finite {
     ///
     /// ```swift
     /// struct CardSuit: Finite.Enumerable {
-    ///     static let count = 4
-    ///     let ordinal: Int
-    ///     init(__unchecked: Void, ordinal: Int) { self.ordinal = ordinal }
+    ///     static let count = Cardinal(4)
+    ///     let ordinal: Ordinal
+    ///     init(__unchecked: Void, ordinal: Ordinal) { self.ordinal = ordinal }
     ///
-    ///     static let hearts = CardSuit(__unchecked: (), ordinal: 0)
+    ///     static let hearts = CardSuit(__unchecked: (), ordinal: .zero)
     ///     // ... define other suits
     /// }
     ///
