@@ -127,15 +127,15 @@ extension Tagged where Tag: ~Copyable {
     }
 }
 
-// MARK: - Int Conversion
-
-extension Tagged where Tag: ~Copyable, RawValue == Ordinal {
-    /// The position as an Int.
-    @inlinable
-    public var intValue: Int {
-        Int(bitPattern: rawValue.rawValue)
-    }
-}
+//// MARK: - Int Conversion
+//
+//extension Tagged where Tag: ~Copyable, RawValue == Ordinal {
+//    /// The position as an Int.
+//    @inlinable
+//    public var intValue: Int {
+//        Int(bitPattern: rawValue.rawValue)
+//    }
+//}
 
 // MARK: - Injection / Projection
 

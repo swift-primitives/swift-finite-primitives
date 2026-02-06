@@ -25,6 +25,10 @@ let package = Package(
         .package(path: "../swift-ordinal-primitives"),
         .package(path: "../swift-identity-primitives"),
         .package(path: "../swift-index-primitives"),
+        .package(path: "../swift-algebra-primitives"),
+        .package(path: "../swift-algebra-group-primitives"),
+        .package(path: "../swift-comparison-primitives"),
+        .package(path: "../swift-optic-primitives"),
     ],
     targets: [
         .target(
@@ -33,6 +37,10 @@ let package = Package(
                 .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
                 .product(name: "Identity Primitives", package: "swift-identity-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
+                .product(name: "Algebra Primitives", package: "swift-algebra-primitives"),
+                .product(name: "Algebra Group Primitives", package: "swift-algebra-group-primitives"),
+                .product(name: "Comparison Primitives", package: "swift-comparison-primitives"),
+                .product(name: "Optic Primitives", package: "swift-optic-primitives"),
             ]
         ),
         .target(
