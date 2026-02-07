@@ -9,7 +9,7 @@ extension Finite {
     /// conformances on `Tagged` for bounded ordinals.
     public protocol Capacity: Sendable {
         /// The number of valid values.
-        static var capacity: Int { get }
+        static var capacity: Cardinal { get }
     }
 }
 
@@ -18,5 +18,5 @@ extension Finite {
 extension Finite.Bound: Finite.Capacity {
     /// The capacity is the bound N.
     @inlinable
-    public static var capacity: Int { N }
+    public static var capacity: Cardinal { Cardinal(UInt(N)) }
 }

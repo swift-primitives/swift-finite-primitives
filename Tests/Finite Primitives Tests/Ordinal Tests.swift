@@ -17,9 +17,9 @@ struct `Ordinal_Finite - Properties` {
     }
 
     @Test(arguments: [0, 1, 2])
-    func `intValue accessor`(value: Int) {
+    func `roundtrip through Int`(value: Int) {
         let ordinal: Ordinal.Finite<5> = Ordinal.Finite(value)!
-        #expect(ordinal.intValue == value)
+        #expect(ordinal == Ordinal.Finite(value)!)
     }
 
     @Test
@@ -79,10 +79,10 @@ struct `Ordinal_Finite - Successor and Predecessor` {
     @Test
     func `successor chain`() {
         var ordinal: Ordinal.Finite<4> = .zero
-        var values: [Int] = [ordinal.intValue]
+        var values: [Ordinal.Finite<4>] = [ordinal]
         while let next = ordinal.successor() {
             ordinal = next
-            values.append(ordinal.intValue)
+            values.append(ordinal)
         }
         #expect(values == [0, 1, 2, 3])
     }
@@ -198,7 +198,7 @@ struct `Ordinal_Finite - Initializers` {
     func `init from Int with valid value`(value: Int) {
         let ordinal: Ordinal.Finite<5>? = Ordinal.Finite(value)
         #expect(ordinal != nil)
-        #expect(ordinal?.intValue == value)
+        #expect(ordinal == Ordinal.Finite(value)!)
     }
 
     @Test(arguments: [-1, 5, 10, 100])
@@ -211,13 +211,13 @@ struct `Ordinal_Finite - Initializers` {
     func `init from Ordinal with valid value`(value: Int) {
         let ordinal: Ordinal.Finite<5>? = Ordinal.Finite(Ordinal(UInt(value)))
         #expect(ordinal != nil)
-        #expect(ordinal?.intValue == value)
+        #expect(ordinal == Ordinal.Finite(value)!)
     }
 
     @Test(arguments: [0, 1, 2])
     func `init unchecked creates ordinal without validation`(value: Int) {
         let ordinal: Ordinal.Finite<5> = Ordinal.Finite(__unchecked: value)
-        #expect(ordinal.intValue == value)
+        #expect(ordinal == Ordinal.Finite(value)!)
     }
 }
 
@@ -236,7 +236,7 @@ struct `Ordinal_Finite - Injection and Projection` {
     func `injected preserves value`(value: Int) {
         let ord2: Ordinal.Finite<2> = Ordinal.Finite(value)!
         let ord10: Ordinal.Finite<10> = ord2.injected()
-        #expect(ord10.intValue == value)
+        #expect(ord10 == Ordinal.Finite(value)!)
     }
 
     @Test

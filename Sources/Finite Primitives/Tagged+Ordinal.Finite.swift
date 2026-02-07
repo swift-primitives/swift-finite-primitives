@@ -11,7 +11,7 @@ extension Tagged where Tag: ~Copyable {
     @inlinable
     public init?<let N: Int>(_ position: Ordinal)
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        guard position < Cardinal(UInt(N)) else { return nil }
+        guard position < Finite.Bound<N>.capacity else { return nil }
         self.init(__unchecked: (), position)
     }
 
@@ -40,9 +40,9 @@ extension Tagged where Tag: ~Copyable {
 extension Tagged where Tag: ~Copyable {
     /// The capacity (number of valid values).
     @inlinable
-    public static func capacity<let N: Int>() -> Int
+    public static func capacity<let N: Int>() -> Cardinal
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        N
+        Finite.Bound<N>.capacity
     }
 
     /// The maximum valid position (N - 1), or nil if N == 0.
@@ -61,17 +61,17 @@ extension Tagged where Tag: ~Copyable {
     @inlinable
     public func successor<let N: Int>() -> Self?
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        let next = rawValue.rawValue + 1
-        guard next < UInt(N) else { return nil }
-        return Self(__unchecked: (), Ordinal(next))
+        let next = rawValue + Cardinal.one
+        guard next < Finite.Bound<N>.capacity else { return nil }
+        return Self(__unchecked: (), next)
     }
 
     /// The previous position, or nil if at zero.
     @inlinable
     public func predecessor<let N: Int>() -> Self?
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        guard rawValue.rawValue > 0 else { return nil }
-        return Self(__unchecked: (), Ordinal(rawValue.rawValue - 1))
+        guard let previous = try? rawValue.predecessor.exact() else { return nil }
+        return Self(__unchecked: (), previous)
     }
 }
 
@@ -82,7 +82,7 @@ extension Tagged where Tag: ~Copyable {
     @inlinable
     public func offset<let N: Int>(by delta: Int) -> Self?
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        let current = Int(bitPattern: rawValue.rawValue)
+        let current = Int(bitPattern: rawValue)
         let result = current + delta
         guard result >= 0, result < N else { return nil }
         return Self(__unchecked: (), Ordinal(UInt(result)))
@@ -92,7 +92,7 @@ extension Tagged where Tag: ~Copyable {
     @inlinable
     public func clamped<let N: Int>(offsetBy delta: Int) -> Self
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        let current = Int(bitPattern: rawValue.rawValue)
+        let current = Int(bitPattern: rawValue)
         let result = current + delta
         if result < 0 { return Self(__unchecked: (), .zero) }
         if result >= N { return Self(__unchecked: (), Ordinal(UInt(N - 1))) }
@@ -107,7 +107,7 @@ extension Tagged where Tag: ~Copyable {
     @inlinable
     public func distance<let N: Int>(to other: Self) -> Int
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        Int(bitPattern: other.rawValue.rawValue) - Int(bitPattern: rawValue.rawValue)
+        Int(bitPattern: other.rawValue) - Int(bitPattern: rawValue)
     }
 }
 
@@ -127,16 +127,6 @@ extension Tagged where Tag: ~Copyable {
     }
 }
 
-//// MARK: - Int Conversion
-//
-//extension Tagged where Tag: ~Copyable, RawValue == Ordinal {
-//    /// The position as an Int.
-//    @inlinable
-//    public var intValue: Int {
-//        Int(bitPattern: rawValue.rawValue)
-//    }
-//}
-
 // MARK: - Injection / Projection
 
 extension Tagged where Tag: ~Copyable {
@@ -155,7 +145,7 @@ extension Tagged where Tag: ~Copyable {
     @inlinable
     public func projected<let N: Int, let M: Int>() -> Tagged<Finite.Bound<M>, Ordinal>?
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
-        guard rawValue.rawValue < UInt(M) else { return nil }
+        guard rawValue < Finite.Bound<M>.capacity else { return nil }
         return Tagged<Finite.Bound<M>, Ordinal>(__unchecked: (), rawValue)
     }
 }
@@ -184,7 +174,7 @@ extension Tagged where Tag: ~Copyable {
         -> (row: Tagged<Finite.Bound<Rows>, Ordinal>, column: Tagged<Finite.Bound<Columns>, Ordinal>)?
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
         guard Rows * Columns == N else { return nil }
-        let position = Int(bitPattern: rawValue.rawValue)
+        let position = Int(bitPattern: rawValue)
         let row = position / Columns
         let column = position % Columns
         return (
@@ -215,7 +205,7 @@ extension Tagged where Tag: ~Copyable {
     ) -> Self?
     where Tag == Finite.Bound<N>, RawValue == Ordinal {
         guard Rows * Columns == N else { return nil }
-        let position = Int(bitPattern: row.rawValue.rawValue) * Columns + Int(bitPattern: column.rawValue.rawValue)
+        let position = Int(bitPattern: row.rawValue) * Columns + Int(bitPattern: column.rawValue)
         return Self(__unchecked: (), Ordinal(UInt(position)))
     }
 }

@@ -31,9 +31,9 @@ struct `Enumeration - Collection` {
     func `subscript returns correct element`(index: Int) throws {
         let enumeration = Ordinal.Finite<5>.allCases
         typealias I = Finite.Enumeration<Ordinal.Finite<5>>.Index
-        let position: I = try .init(index)
+        let position: I = .init(__unchecked: (), try Ordinal(index))
         let element = enumeration[position]
-        #expect(element.intValue == index)
+        #expect(element == Ordinal.Finite(index)!)
     }
 
     @Test

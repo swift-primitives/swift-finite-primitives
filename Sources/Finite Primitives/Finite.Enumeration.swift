@@ -77,7 +77,7 @@ extension Finite.Enumeration: Swift.Collection {
 
     /// Position past the last element.
     @inlinable
-    public var endIndex: Index { Index(Index.Count(Element.count)) }
+    public var endIndex: Index { Index(__unchecked: (), Ordinal(Index.Count(Element.count).rawValue)) }
 
     /// Returns the element at the given position.
     ///
@@ -105,7 +105,7 @@ extension Finite.Enumeration: BidirectionalCollection {
     public func index(before i: Index) -> Index {
         // BidirectionalCollection guarantees i > startIndex.
         // Ordinal subtraction by cardinal is safe here.
-        Index(Ordinal(i.position.rawValue &- 1))
+        Index(__unchecked: (), Ordinal(i.position.rawValue &- 1))
     }
 }
 
@@ -125,7 +125,7 @@ extension Finite.Enumeration: RandomAccessCollection {
     /// Returns an index offset by the given distance.
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
-        Index(Ordinal(UInt(bitPattern: Int(bitPattern: i.position) + distance)))
+        Index(__unchecked: (), Ordinal(UInt(bitPattern: Int(bitPattern: i.position) + distance)))
     }
 
     /// Returns an index offset by the given distance, limited by a boundary.
@@ -133,9 +133,9 @@ extension Finite.Enumeration: RandomAccessCollection {
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
         let result = Int(bitPattern: i.position) + distance
         if distance >= 0 {
-            return result <= Int(bitPattern: limit.position) ? Index(Ordinal(UInt(bitPattern: result))) : nil
+            return result <= Int(bitPattern: limit.position) ? Index(__unchecked: (), Ordinal(UInt(bitPattern: result))) : nil
         } else {
-            return result >= Int(bitPattern: limit.position) ? Index(Ordinal(UInt(bitPattern: result))) : nil
+            return result >= Int(bitPattern: limit.position) ? Index(__unchecked: (), Ordinal(UInt(bitPattern: result))) : nil
         }
     }
 }

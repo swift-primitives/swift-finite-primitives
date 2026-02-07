@@ -28,7 +28,7 @@ struct `Enumerable - Protocol` {
     @Test(arguments: [0, 1, 2, 3, 4])
     func `init __unchecked creates correct value`(index: Int) {
         let ordinal = Ordinal.Finite<5>(__unchecked: index)
-        #expect(ordinal.intValue == index)
+        #expect(ordinal == Ordinal.Finite(index)!)
     }
 
     @Test(arguments: [0, 1, 2, 3, 4])
@@ -72,7 +72,7 @@ struct `Enumerable - Ordinal Tests` {
     @Test(arguments: [0, 1, 2, 3, 4])
     func `Ordinal allCases iteration`(expectedIndex: Int) {
         let allCases = Array(Ordinal.Finite<5>.allCases)
-        #expect(allCases[expectedIndex].intValue == expectedIndex)
+        #expect(allCases[expectedIndex] == Ordinal.Finite(expectedIndex)!)
     }
 
     @Test

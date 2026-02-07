@@ -9,7 +9,7 @@ extension Tagged: @retroactive CaseIterable where Tag: Finite.Capacity, RawValue
 extension Tagged: Finite.Enumerable where Tag: Finite.Capacity, RawValue == Ordinal {
     /// Number of distinct values.
     @inlinable
-    public static var count: Cardinal { Cardinal(UInt(Tag.capacity)) }
+    public static var count: Cardinal { Tag.capacity }
 
     /// Ordinal position of this value.
     @inlinable
