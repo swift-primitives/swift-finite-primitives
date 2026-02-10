@@ -77,7 +77,7 @@ extension Finite.Enumeration: Swift.Collection {
 
     /// Position past the last element.
     @inlinable
-    public var endIndex: Index { Index(__unchecked: (), Ordinal(Index.Count(Element.count).rawValue)) }
+    public var endIndex: Index { Index.Count(Element.count).map(Ordinal.init) }
 
     /// Returns the element at the given position.
     ///
@@ -104,8 +104,7 @@ extension Finite.Enumeration: BidirectionalCollection {
     @inlinable
     public func index(before i: Index) -> Index {
         // BidirectionalCollection guarantees i > startIndex.
-        // Ordinal subtraction by cardinal is safe here.
-        Index(__unchecked: (), Ordinal(i.position.rawValue &- 1))
+        try! i.predecessor.exact()
     }
 }
 
