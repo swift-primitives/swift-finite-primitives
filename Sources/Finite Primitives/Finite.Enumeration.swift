@@ -118,23 +118,23 @@ extension Finite.Enumeration: RandomAccessCollection {
     /// Returns the distance between two indices.
     @inlinable
     public func distance(from start: Index, to end: Index) -> Int {
-        Int(bitPattern: end.position) - Int(bitPattern: start.position)
+        Int(bitPattern: end) - Int(bitPattern: start)
     }
 
     /// Returns an index offset by the given distance.
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
-        Index(__unchecked: (), Ordinal(UInt(bitPattern: Int(bitPattern: i.position) + distance)))
+        Index(__unchecked: (), Ordinal(UInt(bitPattern: Int(bitPattern: i) + distance)))
     }
 
     /// Returns an index offset by the given distance, limited by a boundary.
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-        let result = Int(bitPattern: i.position) + distance
+        let result = Int(bitPattern: i) + distance
         if distance >= 0 {
-            return result <= Int(bitPattern: limit.position) ? Index(__unchecked: (), Ordinal(UInt(bitPattern: result))) : nil
+            return result <= Int(bitPattern: limit) ? Index(__unchecked: (), Ordinal(UInt(bitPattern: result))) : nil
         } else {
-            return result >= Int(bitPattern: limit.position) ? Index(__unchecked: (), Ordinal(UInt(bitPattern: result))) : nil
+            return result >= Int(bitPattern: limit) ? Index(__unchecked: (), Ordinal(UInt(bitPattern: result))) : nil
         }
     }
 }
