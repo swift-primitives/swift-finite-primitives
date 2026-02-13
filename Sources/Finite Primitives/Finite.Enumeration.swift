@@ -3,6 +3,7 @@
 
 import Ordinal_Primitives
 import Index_Primitives
+public import Sequence_Primitives
 
 extension Finite {
     /// A zero-allocation, lazy sequence over an `Enumerable` type.
@@ -30,7 +31,7 @@ extension Finite {
         }
 
         /// Iterator that lazily produces each value in index order.
-        public struct Iterator: IteratorProtocol, Sendable {
+        public struct Iterator: Sequence.Iterator.`Protocol`, IteratorProtocol, Sendable {
             @usableFromInline
             var index: Ordinal_Primitives.Ordinal = .zero
 

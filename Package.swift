@@ -29,6 +29,7 @@ let package = Package(
         .package(path: "../swift-algebra-group-primitives"),
         .package(path: "../swift-comparison-primitives"),
         .package(path: "../swift-optic-primitives"),
+        .package(path: "../swift-sequence-primitives"),
     ],
     targets: [
         .target(
@@ -41,6 +42,7 @@ let package = Package(
                 .product(name: "Algebra Group Primitives", package: "swift-algebra-group-primitives"),
                 .product(name: "Comparison Primitives", package: "swift-comparison-primitives"),
                 .product(name: "Optic Primitives", package: "swift-optic-primitives"),
+                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
             ]
         ),
         .target(
@@ -68,6 +70,7 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableUpcomingFeature("InternalImportsByDefault"),
         .enableUpcomingFeature("MemberImportVisibility"),
         .enableExperimentalFeature("Lifetimes"),
+        .enableExperimentalFeature("SuppressedAssociatedTypes"),
         .strictMemorySafety()
     ]
     target.swiftSettings = (target.swiftSettings ?? []) + settings
