@@ -35,15 +35,31 @@ extension Finite {
             @usableFromInline
             var index: Ordinal_Primitives.Ordinal = .zero
 
+            @usableFromInline
+            var _buffer: InlineArray<1, Element>
+
             @inlinable
-            init() {}
+            init() {
+                self._buffer = InlineArray(repeating: Element(__unchecked: (), ordinal: .zero))
+            }
 
             /// Returns the next value, or `nil` if exhausted.
             @inlinable
             public mutating func next() -> Element? {
-                guard index < Element.count else { return nil }  // Ordinal < Cardinal (disfavored overload)
-                defer { index = index + Cardinal.one }           // Ordinal + Cardinal → Ordinal
+                guard index < Element.count else { return nil }
+                defer { index = index + Cardinal.one }
                 return Element(__unchecked: (), ordinal: index)
+            }
+
+            @_lifetime(&self)
+            @inlinable
+            public mutating func nextSpan(maximumCount: Cardinal) -> Swift.Span<Element> {
+                guard maximumCount > .zero, index < Element.count else {
+                    return _buffer.span.extracting(first: 0)
+                }
+                _buffer[0] = Element(__unchecked: (), ordinal: index)
+                index = index + Cardinal.one
+                return _buffer.span
             }
         }
     }

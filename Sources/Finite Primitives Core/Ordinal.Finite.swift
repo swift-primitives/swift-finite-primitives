@@ -38,5 +38,5 @@ extension Ordinal {
     /// - `predecessor()` — previous position, nil if at zero
     /// - `offset(by:)` — offset by delta, nil if out of bounds
     /// - `capacity()` — the bound N
-    public typealias Finite<let N: Int> = Tagged<Finite_Primitives.Finite.Bound<N>, Ordinal>
+    public typealias Finite<let N: Int> = Tagged<Finite_Primitives_Core.Finite.Bound<N>, Ordinal>
 }

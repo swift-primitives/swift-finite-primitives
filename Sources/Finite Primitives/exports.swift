@@ -1,9 +1,7 @@
 // exports.swift
-// Re-export essential dependencies for consumers.
+// Re-export all sub-targets and applied dependencies.
 
-@_exported import Ordinal_Primitives
-@_exported import Identity_Primitives
-@_exported public import Index_Primitives
+@_exported public import Finite_Primitives_Core
 @_exported public import Algebra_Primitives
 @_exported public import Algebra_Group_Primitives
 @_exported public import Comparison_Primitives

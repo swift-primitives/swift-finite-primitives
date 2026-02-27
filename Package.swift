@@ -13,6 +13,10 @@ let package = Package(
     ],
     products: [
         .library(
+            name: "Finite Primitives Core",
+            targets: ["Finite Primitives Core"]
+        ),
+        .library(
             name: "Finite Primitives",
             targets: ["Finite Primitives"]
         ),
@@ -32,17 +36,25 @@ let package = Package(
         .package(path: "../swift-sequence-primitives"),
     ],
     targets: [
+        // MARK: - Core
         .target(
-            name: "Finite Primitives",
+            name: "Finite Primitives Core",
             dependencies: [
                 .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
                 .product(name: "Identity Primitives", package: "swift-identity-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
+                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
+            ]
+        ),
+        // MARK: - Umbrella
+        .target(
+            name: "Finite Primitives",
+            dependencies: [
+                "Finite Primitives Core",
                 .product(name: "Algebra Primitives", package: "swift-algebra-primitives"),
                 .product(name: "Algebra Group Primitives", package: "swift-algebra-group-primitives"),
                 .product(name: "Comparison Primitives", package: "swift-comparison-primitives"),
                 .product(name: "Optic Primitives", package: "swift-optic-primitives"),
-                .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
             ]
         ),
         .target(
