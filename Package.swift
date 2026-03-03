@@ -13,10 +13,6 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Finite Primitives Core",
-            targets: ["Finite Primitives Core"]
-        ),
-        .library(
             name: "Finite Primitives",
             targets: ["Finite Primitives"]
         ),
