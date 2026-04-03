@@ -17,6 +17,10 @@ let package = Package(
             targets: ["Finite Primitives"]
         ),
         .library(
+            name: "Finite Primitives Core",
+            targets: ["Finite Primitives Core"]
+        ),
+        .library(
             name: "Finite Primitives Test Support",
             targets: ["Finite Primitives Test Support"]
         )
