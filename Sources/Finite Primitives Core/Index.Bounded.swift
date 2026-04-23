@@ -3,7 +3,7 @@
 
 import Index_Primitives
 import Ordinal_Primitives
-import Identity_Primitives
+import Tagged_Primitives
 
 // MARK: - Typealias
 

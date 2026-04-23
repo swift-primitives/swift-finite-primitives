@@ -27,7 +27,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../swift-ordinal-primitives"),
-        .package(path: "../swift-identity-primitives"),
+        .package(path: "../swift-tagged-primitives"),
         .package(path: "../swift-index-primitives"),
         .package(path: "../swift-algebra-primitives"),
         .package(path: "../swift-algebra-group-primitives"),
@@ -41,7 +41,7 @@ let package = Package(
             name: "Finite Primitives Core",
             dependencies: [
                 .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
-                .product(name: "Identity Primitives", package: "swift-identity-primitives"),
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
                 .product(name: "Index Primitives", package: "swift-index-primitives"),
                 .product(name: "Sequence Primitives", package: "swift-sequence-primitives"),
             ]

@@ -2,7 +2,7 @@
 // Finite.Enumerable conformance for Tagged<Finite.Bound<N>, Ordinal>.
 
 import Ordinal_Primitives
-import Identity_Primitives
+import Tagged_Primitives
 
 extension Tagged: @retroactive CaseIterable where Tag: Finite.Capacity, RawValue == Ordinal {}
 

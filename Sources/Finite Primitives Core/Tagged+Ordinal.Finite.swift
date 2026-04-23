@@ -2,7 +2,7 @@
 // Bounded ordinal extensions on Tagged.
 
 import Ordinal_Primitives
-import Identity_Primitives
+import Tagged_Primitives
 
 // MARK: - Construction
 
