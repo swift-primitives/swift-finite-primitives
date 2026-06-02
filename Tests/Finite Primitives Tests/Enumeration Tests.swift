@@ -1,6 +1,6 @@
 // Enumeration Tests.swift
 
-import Test_Primitives
+import Finite_Primitives_Test_Support
 import Testing
 
 @testable import Finite_Primitives
@@ -10,35 +10,39 @@ import Testing
 @Suite
 struct `Enumeration - Collection` {
     @Test
-    func `startIndex is always 0`() {
-        let enumeration = Finite.Ordinal<5>.allCases
-        #expect(enumeration.startIndex == 0)
+    func `startIndex is zero`() {
+        let enumeration = Ordinal.Finite<5>.allCases
+        #expect(enumeration.startIndex == .zero)
     }
 
     @Test
-    func `endIndex equals caseCount`() {
-        let enumeration = Finite.Ordinal<7>.allCases
+    func `endIndex equals count`() {
+        let enumeration = Ordinal.Finite<7>.allCases
         #expect(enumeration.endIndex == 7)
     }
 
     @Test
-    func `count equals caseCount`() {
-        let enumeration = Finite.Ordinal<7>.allCases
-        #expect(enumeration.count == Finite.Ordinal<7>.caseCount)
+    func `count equals count`() {
+        let enumeration = Ordinal.Finite<7>.allCases
+        #expect(enumeration.count == 7)
     }
 
     @Test(arguments: [0, 1, 2, 3])
-    func `subscript returns correct element`(index: Int) {
-        let enumeration = Finite.Ordinal<5>.allCases
-        let element = enumeration[index]
-        #expect(element.rawValue == index)
+    func `subscript returns correct element`(index: Int) throws {
+        let enumeration = Ordinal.Finite<5>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<5>>.Index
+        let position: I = .init(_unchecked: try Ordinal(index))
+        let element = enumeration[position]
+        #expect(element == Ordinal.Finite(index)!)
     }
 
     @Test
     func `index after increments by 1`() {
-        let enumeration = Finite.Ordinal<10>.allCases
-        #expect(enumeration.index(after: 0) == 1)
-        #expect(enumeration.index(after: 5) == 6)
+        let enumeration = Ordinal.Finite<10>.allCases
+        #expect(enumeration.index(after: enumeration.startIndex) == 1)
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i5: I = 5
+        #expect(enumeration.index(after: i5) == 6)
     }
 }
 
@@ -48,19 +52,22 @@ struct `Enumeration - Collection` {
 struct `Enumeration - BidirectionalCollection` {
     @Test
     func `index before decrements by 1`() {
-        let enumeration = Finite.Ordinal<10>.allCases
-        #expect(enumeration.index(before: 5) == 4)
-        #expect(enumeration.index(before: 1) == 0)
+        let enumeration = Ordinal.Finite<10>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i5: I = 5
+        let i1: I = 1
+        #expect(enumeration.index(before: i5) == 4)
+        #expect(enumeration.index(before: i1) == 0)
     }
 
     @Test
     func `reverse iteration`() {
-        let enumeration = Finite.Ordinal<3>.allCases
+        let enumeration = Ordinal.Finite<3>.allCases
         let reversed = Array(enumeration.reversed())
         #expect(reversed.count == 3)
-        #expect(reversed[0].rawValue == 2)
-        #expect(reversed[1].rawValue == 1)
-        #expect(reversed[2].rawValue == 0)
+        #expect(reversed[0] == 2)
+        #expect(reversed[1] == 1)
+        #expect(reversed[2] == 0)
     }
 }
 
@@ -70,47 +77,68 @@ struct `Enumeration - BidirectionalCollection` {
 struct `Enumeration - RandomAccessCollection` {
     @Test
     func `distance from start to end`() {
-        let enumeration = Finite.Ordinal<10>.allCases
+        let enumeration = Ordinal.Finite<10>.allCases
         let distance = enumeration.distance(from: enumeration.startIndex, to: enumeration.endIndex)
         #expect(distance == 10)
     }
 
-    @Test(arguments: [(0, 5), (2, 8), (1, 1)])
-    func `distance between indices`(from: Int, to: Int) {
-        let enumeration = Finite.Ordinal<10>.allCases
-        let distance = enumeration.distance(from: from, to: to)
-        #expect(distance == to - from)
+    @Test
+    func `distance between indices`() {
+        let enumeration = Ordinal.Finite<10>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i0: I = 0
+        let i1: I = 1
+        let i2: I = 2
+        let i5: I = 5
+        let i8: I = 8
+        #expect(enumeration.distance(from: i0, to: i5) == 5)
+        #expect(enumeration.distance(from: i2, to: i8) == 6)
+        #expect(enumeration.distance(from: i1, to: i1) == 0)
     }
 
     @Test
     func `index offsetBy`() {
-        let enumeration = Finite.Ordinal<10>.allCases
-        #expect(enumeration.index(0, offsetBy: 5) == 5)
-        #expect(enumeration.index(3, offsetBy: 2) == 5)
-        #expect(enumeration.index(5, offsetBy: -3) == 2)
+        let enumeration = Ordinal.Finite<10>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i0: I = 0
+        let i3: I = 3
+        let i5: I = 5
+        #expect(enumeration.index(i0, offsetBy: 5) == 5)
+        #expect(enumeration.index(i3, offsetBy: 2) == 5)
+        #expect(enumeration.index(i5, offsetBy: -3) == 2)
     }
 
     @Test
     func `index offsetBy limitedBy succeeds when within limit`() {
-        let enumeration = Finite.Ordinal<10>.allCases
-        let result = enumeration.index(0, offsetBy: 5, limitedBy: 7)
+        let enumeration = Ordinal.Finite<10>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i0: I = 0
+        let i7: I = 7
+        let result = enumeration.index(i0, offsetBy: 5, limitedBy: i7)
         #expect(result == 5)
     }
 
     @Test
     func `index offsetBy limitedBy returns nil when exceeding limit`() {
-        let enumeration = Finite.Ordinal<10>.allCases
-        let result = enumeration.index(0, offsetBy: 8, limitedBy: 5)
+        let enumeration = Ordinal.Finite<10>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i0: I = 0
+        let i5: I = 5
+        let result = enumeration.index(i0, offsetBy: 8, limitedBy: i5)
         #expect(result == nil)
     }
 
     @Test
     func `index offsetBy limitedBy with negative distance`() {
-        let enumeration = Finite.Ordinal<10>.allCases
-        let result1 = enumeration.index(5, offsetBy: -3, limitedBy: 1)
+        let enumeration = Ordinal.Finite<10>.allCases
+        typealias I = Finite.Enumeration<Ordinal.Finite<10>>.Index
+        let i5: I = 5
+        let i1: I = 1
+        let i2: I = 2
+        let result1 = enumeration.index(i5, offsetBy: -3, limitedBy: i1)
         #expect(result1 == 2)
 
-        let result2 = enumeration.index(5, offsetBy: -6, limitedBy: 2)
+        let result2 = enumeration.index(i5, offsetBy: -6, limitedBy: i2)
         #expect(result2 == nil)
     }
 }
@@ -121,36 +149,57 @@ struct `Enumeration - RandomAccessCollection` {
 struct `Enumeration - Iterator` {
     @Test
     func `iterator produces all elements in order`() {
-        let enumeration = Finite.Ordinal<4>.allCases
+        let enumeration = Ordinal.Finite<4>.allCases
         var iterator = enumeration.makeIterator()
 
-        #expect(iterator.next()?.rawValue == 0)
-        #expect(iterator.next()?.rawValue == 1)
-        #expect(iterator.next()?.rawValue == 2)
-        #expect(iterator.next()?.rawValue == 3)
+        #expect(iterator.next() == 0)
+        #expect(iterator.next() == 1)
+        #expect(iterator.next() == 2)
+        #expect(iterator.next() == 3)
         #expect(iterator.next() == nil)
     }
 
     @Test
     func `iterator exhaustion`() {
-        let enumeration = Finite.Ordinal<5>.allCases
+        let enumeration = Ordinal.Finite<5>.allCases
         var iterator = enumeration.makeIterator()
 
         var count = 0
         while iterator.next() != nil {
             count += 1
         }
-        #expect(count == Finite.Ordinal<5>.caseCount)
+        #expect(count == 5)
         #expect(iterator.next() == nil)
     }
 
     @Test
     func `for-in loop iteration`() {
-        var indices: [Int] = []
-        for ordinal in Finite.Ordinal<5>.allCases {
-            indices.append(ordinal.rawValue)
+        var values: [Ordinal.Finite<5>] = []
+        for ordinal in Ordinal.Finite<5>.allCases {
+            values.append(ordinal)
         }
-        #expect(indices == [0, 1, 2, 3, 4])
+        #expect(values.count == 5)
+        #expect(values[0] == 0)
+        #expect(values[4] == 4)
+    }
+}
+
+// MARK: - Enumeration - Total Element Access
+
+@Suite
+struct `Enumeration - Total Element Access` {
+    @Test(arguments: [0, 1, 2, 3, 4])
+    func `element at returns value for valid index`(index: Int) {
+        let enumeration = Ordinal.Finite<5>.allCases
+        let element = enumeration.element(at: index)
+        #expect(element != nil)
+    }
+
+    @Test(arguments: [-1, 5, 10, 100])
+    func `element at returns nil for invalid index`(index: Int) {
+        let enumeration = Ordinal.Finite<5>.allCases
+        let element = enumeration.element(at: index)
+        #expect(element == nil)
     }
 }
 
@@ -160,17 +209,15 @@ struct `Enumeration - Iterator` {
 struct `Enumeration - Zero-Cost` {
     @Test
     func `Enumeration is zero-size type`() {
-        // Enumeration has no stored properties, so it should be zero-size
-        // We can verify this by creating multiple instances and checking iteration
-        let enum1 = Finite.Ordinal<3>.allCases
-        let enum2 = Finite.Ordinal<3>.allCases
+        let enum1 = Ordinal.Finite<3>.allCases
+        let enum2 = Ordinal.Finite<3>.allCases
 
         #expect(Array(enum1) == Array(enum2))
     }
 
     @Test
     func `multiple iterations produce same sequence`() {
-        let enumeration = Finite.Ordinal<5>.allCases
+        let enumeration = Ordinal.Finite<5>.allCases
         let array1 = Array(enumeration)
         let array2 = Array(enumeration)
         #expect(array1 == array2)
