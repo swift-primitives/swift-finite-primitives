@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Finite types for Swift."
+description: "Compile-time-bounded finite types, including bounded ordinals, bounds-checked indices, and enumerable finite case sets, for Swift."
 topics:
   - primitives
   - finite
